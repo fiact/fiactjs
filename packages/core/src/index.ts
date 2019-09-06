@@ -7,4 +7,6 @@ export { createSandbox }
 const defaultSandbox = createSandbox()
 exports.require = defaultSandbox.require.bind(defaultSandbox)
 
-export { tag as jsx } from './utils/jsx';
+import { getJsxTplTag } from './utils/jsx';
+export { getJsxTplTag }
+export const jsx = getJsxTplTag()

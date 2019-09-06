@@ -44,7 +44,6 @@ describe('basic', () => {
         // assert.ok(Core.require.length === 2)
 
         assert.isFunction(Core.createSandbox)
-        assert.isFunction(Core.jsx)
     })
 })
 

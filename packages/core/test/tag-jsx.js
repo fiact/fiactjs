@@ -1,9 +1,13 @@
 const test = require('test')
 test.setup()
 
+const getJsxTplTag = require('../').getJsxTplTag
 const jsx = require('../').jsx
 
 describe('tag-jsx', () => {
+    assert.isFunction(getJsxTplTag)
+    assert.isFunction(jsx)
+
     it('simple', () => {
         assert.equal(
             jsx`<div></div>`,

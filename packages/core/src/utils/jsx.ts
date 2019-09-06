@@ -22,6 +22,12 @@ export function compileInputJsx (buf: Class_Buffer | string, jsxTransformOptions
     );
 }
 
-export function tag (strings: string[]/* , ...exps: any[] */) {
-    return compileInputJsx(strings.join('')).code
+export function getJsxTplTag ({
+    jsxTransformOptions = {...DFT_JSX_TRANSFORMT_OPS}
+} : {
+    jsxTransformOptions?: Fibjs.AnyObject
+} = {}) {
+    return (strings: string[]/* , ...exps: any[] */) => {
+        return compileInputJsx(strings.join(''), jsxTransformOptions).code
+    }
 }
