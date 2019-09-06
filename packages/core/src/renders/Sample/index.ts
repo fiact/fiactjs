@@ -1,4 +1,12 @@
+import * as React from 'react';
+import { EventEmitter } from 'events';
 import ReactReconciler = require('react-reconciler');
+
+import { Root, Node } from './Node';
+
+const emitter = new EventEmitter()
+
+const Components = <Fibjs.AnyObject>{}
 
 const hostConfig: ReactReconciler.HostConfig<
 // Type,
@@ -16,23 +24,23 @@ const hostConfig: ReactReconciler.HostConfig<
 > = {
   getRootHostContext(rootHostContext) {
     console.log('[getRootHostContext]')
-    return rootHostContext;
+    return {};
   },
   getChildHostContext(parentHostContext, type, instance) {
     console.log('[getChildHostContext]')
-    return parentHostContext;
+    return {};
   },
   getPublicInstance(instance) {
     console.log('[getPublicInstance]')
     return instance;
   },
-  createInstance (type, { children, ...rest }, container) {
+  createInstance (type, { children, ...rest }, rootContainerInstance) {
     console.log('[createInstance]')
-    return null
-  },,
+    return new Node()
+  },
   appendInitialChild(parent, child) {
-    console.log('[appendInitialChild]')
-    parent.addChild(child);
+    console.log('[appendInitialChild]', parent, child)
+    // parent.addChild(child);
   },
   finalizeInitialChildren(instance, type, props) {
     console.log('[finalizeInitialChildren]')
@@ -54,7 +62,15 @@ const hostConfig: ReactReconciler.HostConfig<
     console.log('[createTextInstance]')
     return text;
   },
-  // scheduleDeferredCallback: window.requestIdleCallback,
+  scheduleDeferredCallback() {
+    console.log('[scheduleDeferredCallback]')
+  },
+  cancelDeferredCallback() {
+    console.log('[cancelDeferredCallback]')
+  },
+  shouldYield() {
+    console.log('[shouldYield]')
+  },
   prepareForCommit() {
     console.log('[prepareForCommit]')
   },
@@ -80,15 +96,15 @@ const hostConfig: ReactReconciler.HostConfig<
   },
   appendChild(parent, child) {
     console.log('[appendChild]')
-    parent.addChild(child);
+    // parent.addChild(child);
   },
   appendChildToContainer(container, child) {
-    console.log('[appendChildToContainer]')
-    container.addChild(child);
+    console.log('[appendChildToContainer]', container)
+    // container.addChild(child);
   },
   insertBefore(parent, child, beforeChild) {
     console.log('[insertBefore]')
-    parent.insertBefore(child, beforeChild);
+    // parent.insertBefore(child, beforeChild);
   },
   insertInContainerBefore(container, child, beforeChild) {
     console.log('[insertInContainerBefore]')
@@ -96,23 +112,34 @@ const hostConfig: ReactReconciler.HostConfig<
   },
   removeChild(parent, child) {
     console.log('[removeChild]')
-    parent.removeChild(child);
+    // parent.removeChild(child);
   },
   removeChildFromContainer(container, child) {
     console.log('[removeChildFromContainer]')
-    container.removeChild(child);
+    // container.removeChild(child);
   }
 };
 const ReactReconcilerInst = ReactReconciler(hostConfig);
 
-export default {
+const Renders = <{render: Function} & Fibjs.AnyObject>{
   render: function (reactElement, domElement, callback) {
     // Create a root Container if it doesnt exist
     if (!domElement._rootContainer) {
-      domElement._rootContainer = ReactReconcilerInst.createContainer(domElement, false);
+      domElement._rootContainer = ReactReconcilerInst.createContainer(domElement, false, false);
     }
 
     // update the root Container
     return ReactReconcilerInst.updateContainer(reactElement, domElement._rootContainer, null, callback);
   }
 };
+
+Renders.Root = Root
+
+Renders.End = class End extends React.Component {
+  render () {
+    // const node = new Node()
+    return '123'
+  }
+}
+
+export default Renders

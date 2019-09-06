@@ -7,11 +7,17 @@ const Renders = require('../').Renders
 
 describe('renders', () => {
     it('sample', () => {
+        const Sample = Renders.Sample
+
         function App () {
-            return null
+            return (
+                <Sample.End></Sample.End>
+            )
         }
 
-        Renders.Sample.render(<App />, new events.EventEmitter())
+        const root = new Sample.Root();
+
+        Sample.render(<App />, root);
     })
 })
 
