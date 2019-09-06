@@ -23,5 +23,5 @@ export function compileInputJsx (buf: Class_Buffer | string, jsxTransformOptions
 }
 
 export function tag (strings: string[]/* , ...exps: any[] */) {
-    return compileInputJsx(strings.join(''))
+    return compileInputJsx(strings.join('')).code
 }
