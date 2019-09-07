@@ -10,3 +10,5 @@ exports.require = defaultSandbox.require.bind(defaultSandbox)
 import { getJsxTplTag } from './utils/jsx';
 export { getJsxTplTag }
 export const jsx = getJsxTplTag()
+
+export { getContextReducer } from './utils/store';

@@ -1,8 +1,18 @@
-export class Node {
+import * as React from 'react';
+
+export class Node<
+  P extends React.Props<{}> = Fibjs.AnyObject,
+  S extends Fibjs.AnyObject = Fibjs.AnyObject
+> extends React.Component<P, S> {
   parent: Node | null = null;
   children: Node[] = []
+
+  get name (): string {
+    return 'node'
+  }
   
-  constructor() {
+  constructor(props?: P) {
+    super(props)
   }
 
   appendChild(child: Node) {

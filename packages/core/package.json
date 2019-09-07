@@ -29,18 +29,26 @@
     ]
   },
   "homepage": "https://github.com/fiact/fiactjs#readme",
-  "devDependencies": {
-    "@fibjs/ci": "^2.3.0",
-    "@fibjs/types": "^0.28.0",
-    "@types/fibjs": "^0.26.5",
-    "react": "^16.9.0"
-  },
   "dependencies": {
     "@babel/core": "^7.6.0",
     "@babel/plugin-transform-react-jsx": "^7.3.0",
     "@babel/standalone": "^7.6.0",
     "@fibjs/builtin-modules": "^0.1.0",
+    "@fxjs/db-driver": "0.0.3",
+    "@fxjs/orm-core": "0.0.1",
+    "@fxjs/sql-ddl-sync": "^0.6.2",
+    "@fxjs/sql-query": "^0.5.1",
     "@types/react-reconciler": "^0.18.0",
+    "fib-pool": "^1.5.4",
     "react-reconciler": "^0.21.0"
+  },
+  "devDependencies": {
+    "@fibjs/ci": "^2.3.0",
+    "@fibjs/types": "^0.28.0",
+    "fib-typify": "^0.7.0",
+    "react": "^16.9.0"
+  },
+  "peerDependencies": {
+    "react": ">= 16.9.0"
   }
 }
