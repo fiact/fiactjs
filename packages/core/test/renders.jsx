@@ -73,6 +73,18 @@ describe('renders', () => {
 
         SQLite.render(<UserSchema />, null);
     })
+
+    it('Net', () => {
+        const Net = Renders.Net
+
+        function NetApp () {
+            return (
+                <Net.Server></Net.Server>
+            )
+        }
+
+        Net.render(<NetApp />, null);
+    })
 })
 
 if (require.main === module)

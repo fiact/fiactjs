@@ -4,7 +4,8 @@ import React = require('react')
 import assert = require('assert')
 
 import DDLSync = require('@fxjs/sql-ddl-sync')
-import useRunOnce from '../../../utils/react-helpers/use-runonce'
+import useRunOnce from '../../../utils/react-hooks/use-runonce'
+import { logInReconciler } from '../../../utils/react-reconciler';
 
 import DBIndex from './DBIndex';
 
@@ -28,7 +29,7 @@ export default function Column ({
     useRunOnce(() => {
         const dialect = DDLSync.dialect('sqlite')
 
-        console.log(
+        logInReconciler(
             `[Column] table ${table} has column ${name}?`,
             dialect.hasCollectionColumnsSync(driver, table, name)
         )

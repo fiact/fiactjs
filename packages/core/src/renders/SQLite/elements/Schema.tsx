@@ -1,6 +1,5 @@
 import hash = require('hash');
 import uuid = require('uuid');
-import coroutine = require('coroutine');
 
 import React = require('react');
 
@@ -10,7 +9,9 @@ import Table from './Table';
 
 import { connect, useCtxState } from './Storage';
 
-function getSchemaId () {
+import { logInReconciler } from '../../../utils/react-reconciler';
+
+function randomSchemaId () {
     return `${uuid.snowflake().hex()}`
 }
 
@@ -19,13 +20,15 @@ function md5 (input: string) {
 }
 
 function Schema ({
-     children = null,
+    children = null,
     connection = 'sqlite::memory:',
-    id: schema_id = md5(connection),
+    id: init_sid/*  = md5(connection), */
 }: React.PropsWithChildren<{
     id?: string
     connection?: string
 }>) {
+    const [ schema_id ] = React.useState(init_sid || randomSchemaId())
+
     if (!connection.startsWith('sqlite:'))
         connection = `sqlite:${connection}`
 

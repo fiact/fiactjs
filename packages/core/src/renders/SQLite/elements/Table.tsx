@@ -8,7 +8,8 @@ import DDLSync = require('@fxjs/sql-ddl-sync')
 import Column from './Column';
 import DBIndex from './DBIndex';
 import { useCtxState, computer } from './Storage';
-import useRunOnce from '../../../utils/react-helpers/use-runonce';
+import useRunOnce from '../../../utils/react-hooks/use-runonce';
+import { logInReconciler } from '../../../utils/react-reconciler';
 
 export default function Table ({
     children = null,
@@ -56,9 +57,8 @@ export default function Table ({
         const dialect = DDLSync.dialect('sqlite')
         
         let existed = dialect.hasCollectionSync(driver, table);
-        console.log(`[Table] table existed?`, existed)
-
-        console.log('allColumnsConfig', allColumnsConfig);
+        logInReconciler(`[Table] table existed?`, existed)
+        logInReconciler('allColumnsConfig', allColumnsConfig);
         
         const columns = allColumnsConfig.map(({name: colname, property}) => {
             const typeResult = dialect.getType(
@@ -75,15 +75,15 @@ export default function Table ({
             dialect.createCollectionSync(driver, table, columns, allKeyColumns)
 
         existed = dialect.hasCollectionSync(driver, table)
-        console.log(
+        logInReconciler(
             `[Table] now table existed?`,
             existed
         )
 
         if (existed) {
-            console.log()
-            console.notice(`created table ${table} with columns ${columns.join(', ')}, details:`)
-            console.notice(`${JSON.stringify(dialect.getCollectionColumnsSync(driver, table), null, '\t')}`)
+            logInReconciler()
+            logInReconciler(`created table ${table} with columns ${columns.join(', ')}, details:`)
+            logInReconciler(`${JSON.stringify(dialect.getCollectionColumnsSync(driver, table), null, '\t')}`)
         }
     }, [driver])
 

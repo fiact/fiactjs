@@ -2,7 +2,9 @@
 
 import React = require('react')
 import assert = require('assert')
-import useRunOnce from '../../../utils/react-helpers/use-runonce'
+import useRunOnce from '../../../utils/react-hooks/use-runonce'
+
+import { logInReconciler } from '../../../utils/react-reconciler';
 
 function dftIndexName (table: string, columns: string[]) {
     return `${table}_idx_${columns.join('_')}`
@@ -26,7 +28,7 @@ export default function Index ({
         name = dftIndexName(table, columns)
 
     useRunOnce(() => {
-        console.log(`[Index] ??? table ${table}'s index '${name}' for cols: ${columns.join(', ')}`)
+        logInReconciler(`[Index] ??? table ${table}'s index '${name}' for cols: ${columns.join(', ')}`)
     }, [driver], () => !!driver && !!columns.length)
 
     return null

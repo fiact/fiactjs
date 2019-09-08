@@ -52,7 +52,7 @@ export const computer = {
                 [schema_id]: {
                     driver = null
                 } = {}
-            }
+            } = {}
         } = state || {};
         return driver
     }
