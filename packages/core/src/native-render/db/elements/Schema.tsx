@@ -16,6 +16,12 @@ function md5 (input: string | number) {
     return hash.md5(input as any).digest().hex()
 }
 
+/**
+ * @description
+ *  put it as child of <DB> element, which would manage automatically or manually based
+ *  on your setting
+ * 
+ */
 function Schema ({
     children = null,
     connection = 'sqlite::memory:',
@@ -26,8 +32,21 @@ function Schema ({
 }>) {
     const [ schema_id ] = React.useState(init_sid || randomSchemaId())
 
+    const [ existed, setExisted ] = React.useState(false)
+
     const driver = DBDriver.create(connection)
     logInReconciler('[Schema] db-driver', driver.type)
+
+    React.useEffect(() => {
+        try {
+            driver.ping()
+            setExisted(true)
+        } catch (error) {
+            setExisted(false)
+        }
+    })
+
+    if (!existed) return null
 
     return <>{
         React.Children.map(
