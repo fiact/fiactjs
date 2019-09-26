@@ -2,16 +2,18 @@ const test = require('test')
 test.setup()
 
 const React = require('react')
+const Renders = require('../').Renders
 const NativeRenders = require('../').NativeRenders
 
-describe('native-renders', () => {
+odescribe('renders-orm', () => {
     it('DB Schema', () => {
-        const DB = NativeRenders.DB
+        const DB = Renders.ORM.DB
 
         function UserSchema () {
             return (
                 <DB.Schema
-                    connection={`sqlite::memory:`}
+                    // connection={`sqlite::memory:`}
+                    connection={`mysql://root:@127.0.0.1:3306/fiact-test`}
                 >
                     <DB.Table
                         table="user"
@@ -57,8 +59,31 @@ describe('native-renders', () => {
             )
         }
 
-        DB.render(<UserSchema />, null);
+        Renders.ORM.render(<UserSchema />, null);
     });
+
+    xdescribe('DB Model', () => {
+        it('Init Data', () => {
+            const ORM = Renders.ORM
+
+            function UserModel () {
+                return (
+                    <ORM.Model
+                        connection={`sqlite::memory:`}
+                    >
+                        <ORM.Property
+                            name="username"
+                            mapsTo="username"
+                            type="string"
+                            key={true}
+                        />
+                    </ORM.Model>
+                )
+            }
+    
+            Renders.ORM.render(<UserModel />, null);
+        });
+    })
 
     xdescribe('DB View', () => {
         it('render as http response', () => {

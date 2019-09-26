@@ -48,19 +48,16 @@ function Schema ({
 
     if (!existed) return null
 
-    return <>{
-        React.Children.map(
-            children,
-            (element: React.ReactElement) => {
-                switch (element.type) {
-                    case Table:
-                        return <element.type schema_id={schema_id} driver={driver} {...element.props} />
-                    default:
-                        return element
-                }
-            }
-        )
-    }</>
+    return React.Children.map(
+        children,
+        (element: React.ReactElement) => {
+            return <element.type
+                schema_id={schema_id}
+                driver={driver}
+                {...element.props}
+            />
+        }
+    )
 }
 
 export default Schema

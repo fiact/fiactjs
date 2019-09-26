@@ -15,10 +15,14 @@ export default function Table ({
     table,
     driver,
     schema_id,
+
+    keepAlive = false
 }: React.PropsWithChildren<{
     table: string,
     driver: FxDbDriverNS.Driver,
-    schema_id: string
+    schema_id: string,
+
+    keepAlive?: boolean
 }>) {
     assert.ok(!!driver, `[Table Element] driver is required`)
     assert.ok(!!schema_id, `[Table Element] schema_id is required`)
@@ -26,17 +30,16 @@ export default function Table ({
 
     const allColumnsConfig = []
     const allKeyColumns: string[] = []
-    const nodeRenders = []
-
-    const [ existed, setExisted ] = React.useState<undefined | boolean>(undefined)
 
     const dialect = DDLSync.dialect(driver.type as FxOrmSqlDDLSync__Dialect.DialectType)
+
+    const [ existed, setExisted ] = React.useState<undefined | boolean>(true)
 
     React.useEffect(() => {
         logInReconciler(`[Table] table existed?`, existed)
         // logInReconciler('allColumnsConfig', allColumnsConfig);
 
-        if (existed === false) {
+        if (!dialect.hasCollectionSync(driver, table)) {
             React.Children.forEach(
                 children,
                 (element: React.ReactElement) => {
@@ -67,16 +70,24 @@ export default function Table ({
             }).filter(x => x);
 
             dialect.createCollectionSync(driver, table, columns, allKeyColumns)
-            setExisted(dialect.hasCollectionSync(driver, table))
+            setExisted(dialect.hasCollectionSync(driver, table));
 
             logInReconciler()
             logInReconciler(`created table ${table} with columns ${columns.join(', ')}, details:`)
-        } else {
-            setExisted(dialect.hasCollectionSync(driver, table));
+            logInReconciler(`${JSON.stringify(dialect.getCollectionColumnsSync(driver, table), null, '\t')}`)
         }
+    }, [existed]);
 
-        logInReconciler(`${JSON.stringify(dialect.getCollectionColumnsSync(driver, table), null, '\t')}`)
-    }, [])
+    // add interval to check if it existed.
+    if (true || keepAlive)
+        React.useEffect(() => {
+            const interval = setInterval(() => {
+                // console.log('[Schema.Table] loop check', dialect.hasCollectionSync(driver, table));
+                setExisted(dialect.hasCollectionSync(driver, table));
+            }, 1000);
+
+            return () => clearInterval(interval);
+        }, []);
 
     if (!existed)
         return null
@@ -86,15 +97,12 @@ export default function Table ({
         (element: React.ReactElement) => {
             switch (element.type) {
                 case Column:
-                    nodeRenders.push(() => <element.type table={table} driver={driver} {...element.props} />)
-                    break
+                    return (<element.type table={table} driver={driver} {...element.props} />)
                 case DBIndex:
-                    nodeRenders.push(() => <element.type table={table} driver={driver} {...element.props} />)
-                    break
+                    return (<element.type table={table} driver={driver} {...element.props} />)
                 default:
-                    nodeRenders.push(() => <element.type table={table} {...element.props} />)
-                    break
+                    return (<element.type table={table} {...element.props} />)
             }
         }
-    ) as any as React.ReactElement
+    )
 }
