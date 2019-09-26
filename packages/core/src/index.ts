@@ -1,6 +1,9 @@
 import * as Renders from './renders'
 export { Renders }
 
+import * as NativeRenders from './native-render'
+export { NativeRenders }
+
 import { getSandbox as createSandbox } from './utils/sandbox'
 export { createSandbox }
 
