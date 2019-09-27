@@ -2,6 +2,7 @@
 
 import React = require('react')
 import assert = require('assert')
+import util = require('util')
 
 import DDLSync = require('@fxjs/sql-ddl-sync')
 import useRunOnce from '../../../utils/react-hooks/use-runonce'
@@ -32,9 +33,11 @@ export default function Column ({
     const dialect = DDLSync.dialect(driver.type as FxOrmSqlDDLSync__Dialect.DialectType)
 
     React.useEffect(() => {
-        setInterval(() => {
-            dialect.hasCollectionColumnsSync(driver, table, name)
+        const interval = setInterval(() => {
+            setExisted(dialect.hasCollectionColumnsSync(driver, table, name))
         }, 1000)
+
+        return () => clearInterval(interval)
     }, [])
     
     React.useEffect(() => {
@@ -43,14 +46,16 @@ export default function Column ({
                 const typeInfo = dialect.getType(table, property, driver, { for: 'add_column' });
                 if (typeInfo) {
                     try {
+                        const props = dialect.getCollectionPropertiesSync(driver, table);
+                        const last_column = util.last(Object.keys(props));
+
                         dialect.addCollectionColumnSync(
                             driver,
                             table,
                             SqlQueryDialects[driver.type].escapeId(name) + " " + typeInfo.value,
-                            false
+                            last_column || false
                         );
-                    } catch (error) {
-                    }
+                    } catch (error) {}
                 }
 
                 setExisted(dialect.hasCollectionColumnsSync(driver, table, name))
